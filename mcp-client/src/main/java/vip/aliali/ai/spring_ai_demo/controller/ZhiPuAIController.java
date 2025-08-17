@@ -1,14 +1,17 @@
 package vip.aliali.ai.spring_ai_demo.controller;
 
+import io.modelcontextprotocol.client.McpSyncClient;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.zhipuai.ZhiPuAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vip.aliali.ai.spring_ai_demo.tools.DateTimeTools;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,10 +21,15 @@ public class ZhiPuAIController {
     private ZhiPuAiChatModel zhiPuAiChatModel;
     @Resource
     private ChatClient zhiPuAiClient;
+    @Autowired
+    private List<McpSyncClient> mcpSyncClients;
 
-    @GetMapping("/ai/generate")
-    public String generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
-        return zhiPuAiClient.prompt().user(message).call().content();
+    @PostMapping("/ai/generate")
+    public String generate(@RequestParam String message) {
+        return zhiPuAiClient.prompt()
+                .user(message)
+                .call()
+                .content();
     }
 
     /**
